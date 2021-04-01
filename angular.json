@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "moju",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "moju": {
+      "projectType": "application",
+      "root": "apps/moju",
+      "sourceRoot": "apps/moju/src",
+      "prefix": "tasti",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/moju",
+            "index": "apps/moju/src/index.html",
+            "main": "apps/moju/src/main.ts",
+            "polyfills": "apps/moju/src/polyfills.ts",
+            "tsConfig": "apps/moju/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/moju/src/favicon.ico", "apps/moju/src/assets"],
+            "styles": ["apps/moju/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/moju/src/environments/environment.ts",
+                  "with": "apps/moju/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "moju:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "moju:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "moju:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/moju/src/**/*.ts",
+              "apps/moju/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/moju"],
+          "options": {
+            "jestConfig": "apps/moju/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "moju-e2e": {
+      "root": "apps/moju-e2e",
+      "sourceRoot": "apps/moju-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/moju-e2e/cypress.json",
+            "tsConfig": "apps/moju-e2e/tsconfig.e2e.json",
+            "devServerTarget": "moju:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "moju:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/moju-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}
